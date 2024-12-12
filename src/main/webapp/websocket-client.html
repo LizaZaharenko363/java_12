@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Message Client</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        #messageLog { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<h1>WebSocket Message Client</h1>
+
+<div>
+    <input type="text" id="messageInput" placeholder="Enter your message">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<div id="messageLog"></div>
+
+<script>
+    const socket = new WebSocket('ws://' + window.location.host + '/Java12-1.0-SNAPSHOT/websocket');
+    const messageLog = document.getElementById('messageLog');
+    const messageInput = document.getElementById('messageInput');
+
+    socket.onopen = function(event) {
+        log('WebSocket connection established');
+    };
+
+    socket.onmessage = function(event) {
+        log('Received: ' + event.data);
+    };
+
+    socket.onerror = function(error) {
+        log('WebSocket Error: ' + error);
+    };
+
+    function sendMessage() {
+        const message = messageInput.value;
+        if (message) {
+            socket.send(message);
+            log('Sent: ' + message);
+            messageInput.value = '';
+        }
+    }
+
+    function log(message) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messageLog.appendChild(messageElement);
+        messageLog.scrollTop = messageLog.scrollHeight;
+    }
+</script>
+</body>
+</html>
